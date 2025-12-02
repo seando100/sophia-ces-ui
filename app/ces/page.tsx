@@ -292,162 +292,162 @@ export default function CESPage() {
     }
 
 
-  /* ============================================================
-    UI
-  ============================================================ */
-  return (
-    <div className="w-full h-screen bg-[#0A0F2C] text-white">
-      <audio ref={audioRef} />
+/* ============================================================
+   UI
+============================================================ */
+return (
+  <div className="w-full h-screen bg-[#0A0F2C] text-white">
+    <audio ref={audioRef} />
 
-      {/* ============================================================
-          DESKTOP LAYOUT (md and up)
-      ============================================================ */}
-      <div className="hidden md:flex w-full h-full">
-        {/* LEFT PANEL – Avatar */}
-        <div className="w-[92%] h-full flex flex-col items-end justify-center p-10 bg-gradient-to-br from-[#0F1A4F] via-[#0A0F2C] to-[#091642]">
-          <div className="text-white text-2xl font-medium mb-4 opacity-90 tracking-wide">
-            Hi, I am Sophia.
-          </div>
-
-          <div className="relative w-[820px] h-[920px] overflow-hidden mt-[-30px]">
-            <img
-              src="/sophia/avatar.png"
-              alt="Sophia Avatar"
-              className="absolute top-[120px] w-full object-cover"
-            />
-          </div>
+    {/* ============================================================
+         DESKTOP LAYOUT (md and up)
+    ============================================================ */}
+    <div className="hidden md:flex w-full h-full">
+      {/* LEFT PANEL – Avatar */}
+      <div className="w-[92%] h-full flex flex-col items-end justify-center p-10 bg-gradient-to-br from-[#0F1A4F] via-[#0A0F2C] to-[#091642]">
+        <div className="text-white text-2xl font-medium mb-4 opacity-90 tracking-wide">
+          Hi, I am Sophia.
         </div>
 
-        {/* RIGHT – Chat */}
-        <div className="w-[68%] h-full flex items-center justify-center p-8">
-          <div className="w-full max-w-[480px] h-[80%] bg-[#1D1E24] rounded-2xl shadow-lg p-6 text-white flex flex-col">
-            <div className="text-lg font-semibold mb-4">Sophia</div>
-
-            <div
-              ref={chatRef}
-              className="flex-1 overflow-y-auto mb-4 p-3 bg-[#2A2B33] rounded-xl"
-            >
-              {messages.map((m, i) => (
-                <div
-                  key={i}
-                  className={`px-4 py-2 rounded-lg max-w-[75%] my-1 ${
-                    m.role === "user"
-                      ? "self-end bg-blue-700 ml-auto"
-                      : "self-start bg-[#3A3B44]"
-                  }`}
-                >
-                  {m.content}
-                </div>
-              ))}
-            </div>
-
-            {/* INPUT BAR */}
-            <div className="flex gap-2">
-              <input
-                placeholder="Ask me anything..."
-                className="flex-1 bg-[#2A2B33] p-3 rounded-xl text-sm text-white outline-none"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendToSophia(input, false)}
-              />
-
-              <button
-                onClick={() => sendToSophia(input, false)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-sm"
-              >
-                Send
-              </button>
-
-              <button
-                onClick={() => {
-                  if (isRecordingRef.current) {
-                    allowMicRef.current = false;
-                    stopRecording();
-                    return;
-                  }
-                  voiceModeRef.current = true;
-                  allowMicRef.current = true;
-                  startRecording();
-                }}
-                className={`${
-                  recordingUI ? "bg-red-600" : "bg-blue-600"
-                } hover:bg-blue-700 text-white px-3 py-3 rounded-xl text-sm`}
-              >
-                {recordingUI ? "●" : "🎤"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ============================================================
-          MOBILE LAYOUT (below md)
-      ============================================================ */}
-      <div className="md:hidden flex flex-col w-full h-full">
-        {/* Header */}
-        <div className="flex items-center gap-3 p-4 bg-[#0F1A4F] shadow-md">
+        <div className="relative w-[820px] h-[920px] overflow-hidden mt-[-30px]">
           <img
             src="/sophia/avatar.png"
             alt="Sophia Avatar"
-            className="h-10 w-10 rounded-full object-cover border border-white/20"
+            className="absolute top-[120px] w-full object-cover"
           />
-          <span className="text-white text-lg font-semibold">Sophia</span>
         </div>
+      </div>
 
-        {/* Chat Window */}
-        <div
-          ref={chatRef}
-          className="flex-1 overflow-y-auto px-3 py-4 bg-[#1D1E24]"
-        >
-          {messages.map((m, i) => (
-            <div
-              key={i}
-              className={`px-4 py-2 rounded-lg max-w-[85%] my-1 ${
-                m.role === "user"
-                  ? "self-end bg-blue-700 ml-auto"
-                  : "self-start bg-[#3A3B44]"
-              }`}
+      {/* RIGHT – Chat */}
+      <div className="w-[68%] h-full flex items-center justify-center p-8">
+        <div className="w-full max-w-[480px] h-[80%] bg-[#1D1E24] rounded-2xl shadow-lg p-6 flex flex-col">
+          <div className="text-lg font-semibold mb-4">Sophia</div>
+
+          <div
+            ref={chatRef}
+            className="flex-1 overflow-y-auto mb-4 p-3 bg-[#2A2B33] rounded-xl"
+          >
+            {messages.map((m, i) => (
+              <div
+                key={i}
+                className={`px-4 py-2 rounded-lg max-w-[75%] my-1 ${
+                  m.role === "user"
+                    ? "self-end bg-blue-700 ml-auto"
+                    : "self-start bg-[#3A3B44]"
+                }`}
+              >
+                {m.content}
+              </div>
+            ))}
+          </div>
+
+          {/* INPUT BAR */}
+          <div className="flex gap-2">
+            <input
+              placeholder="Ask me anything..."
+              className="flex-1 bg-[#2A2B33] p-3 rounded-xl text-sm text-white outline-none"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendToSophia(input, false)}
+            />
+
+            <button
+              onClick={() => sendToSophia(input, false)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-sm"
             >
-              {m.content}
-            </div>
-          ))}
-        </div>
+              Send
+            </button>
 
-        {/* Input Area */}
-        <div className="p-3 bg-[#0F1A4F] flex gap-2">
-          <input
-            placeholder="Ask me anything..."
-            className="flex-1 bg-[#2A2B33] p-3 rounded-xl text-sm text-white outline-none"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendToSophia(input, false)}
-          />
-
-          <button
-            onClick={() => sendToSophia(input, false)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-sm"
-          >
-            Send
-          </button>
-
-          <button
-            onClick={() => {
-              if (isRecordingRef.current) {
-                allowMicRef.current = false;
-                stopRecording();
-                return;
-              }
-              voiceModeRef.current = true;
-              allowMicRef.current = true;
-              startRecording();
-            }}
-            className={`${
-              recordingUI ? "bg-red-600" : "bg-blue-600"
-            } hover:bg-blue-700 text-white px-3 py-3 rounded-xl text-sm`}
-          >
-            {recordingUI ? "●" : "🎤"}
-          </button>
+            <button
+              onClick={() => {
+                if (isRecordingRef.current) {
+                  allowMicRef.current = false;
+                  stopRecording();
+                  return;
+                }
+                voiceModeRef.current = true;
+                allowMicRef.current = true;
+                startRecording();
+              }}
+              className={`${
+                recordingUI ? "bg-red-600" : "bg-blue-600"
+              } hover:bg-blue-700 text-white px-3 py-3 rounded-xl text-sm`}
+            >
+              {recordingUI ? "●" : "🎤"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  );
+
+    {/* ============================================================
+         MOBILE LAYOUT (below md)
+    ============================================================ */}
+    <div className="md:hidden flex flex-col w-full h-full">
+      {/* Header */}
+      <div className="flex items-center gap-3 p-4 bg-[#0F1A4F] shadow-md">
+        <img
+          src="/sophia/avatar.png"
+          alt="Sophia Avatar"
+          className="h-10 w-10 rounded-full object-cover border border-white/20"
+        />
+        <span className="text-white text-lg font-semibold">Sophia</span>
+      </div>
+
+      {/* Chat Window */}
+      <div
+        ref={chatRef}
+        className="flex-1 overflow-y-auto px-3 py-4 bg-[#1D1E24]"
+      >
+        {messages.map((m, i) => (
+          <div
+            key={i}
+            className={`px-4 py-2 rounded-lg max-w-[85%] my-1 ${
+              m.role === "user"
+                ? "self-end bg-blue-700 ml-auto"
+                : "self-start bg-[#3A3B44]"
+            }`}
+          >
+            {m.content}
+          </div>
+        ))}
+      </div>
+
+      {/* Input Area */}
+      <div className="p-3 bg-[#0F1A4F] flex gap-2">
+        <input
+          placeholder="Ask me anything..."
+          className="flex-1 bg-[#2A2B33] p-3 rounded-xl text-sm text-white outline-none"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendToSophia(input, false)}
+        />
+
+        <button
+          onClick={() => sendToSophia(input, false)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-sm"
+        >
+          Send
+        </button>
+
+        <button
+          onClick={() => {
+            if (isRecordingRef.current) {
+              allowMicRef.current = false;
+              stopRecording();
+              return;
+            }
+            voiceModeRef.current = true;
+            allowMicRef.current = true;
+            startRecording();
+          }}
+          className={`${
+            recordingUI ? "bg-red-600" : "bg-blue-600"
+          } hover:bg-blue-700 text-white px-3 py-3 rounded-xl text-sm`}
+        >
+          {recordingUI ? "●" : "🎤"}
+        </button>
+      </div>
+    </div>
+  </div>
+);
