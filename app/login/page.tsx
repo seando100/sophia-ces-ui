@@ -4,43 +4,51 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
 
     const res = await fetch("/api/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ password })
     });
 
-    const data = await res.json();
-
-    if (data.success) {
+    if (res.ok) {
       router.push("/ces");
     } else {
       setError("Incorrect password");
     }
-  }
+  };
 
   return (
-    <div style={{ display: "flex", height: "100vh", justifyContent: "center", alignItems: "center" }}>
-      <form onSubmit={handleSubmit} style={{ width: 300, padding: 20, background: "#222", borderRadius: 8 }}>
-        <h3 style={{ color: "white", marginBottom: 12 }}>Enter CES Access Password</h3>
+    <div className="min-h-screen flex items-center justify-center bg-[#0a1029]">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#1a1f36] p-6 rounded-lg shadow-lg space-y-4 w-80"
+      >
+        <h2 className="text-white text-center">Enter CES Access Password</h2>
 
         <input
           type="password"
+          className="w-full p-2 rounded bg-[#0f1425] text-white focus:outline-none"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", padding: 8, marginBottom: 12 }}
+          placeholder="Password"
         />
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="text-red-400 text-sm">{error}</p>}
 
-        <button type="submit" style={{ width: "100%", padding: 10, marginTop: 8 }}>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded"
+        >
           Enter
         </button>
       </form>
