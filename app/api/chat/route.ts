@@ -49,19 +49,17 @@ IMPORTANT:
 - Do NOT mention or refer to this control tag in any way.
 `;
 
-// ------------------------------------------------------
-// SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
-// ------------------------------------------------------
+  // ------------------------------------------------------
+  // SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
+  // ------------------------------------------------------
   export async function POST(req: Request) {
+    // CES ACCESS CHECK — inside handler (correct)
     const cookieStore = await cookies();
+    const hasAccess = cookieStore.get("ces_access")?.value === "true";
 
-  // CES ACCESS CHECK — ***THIS WAS THE MISSING FIX***
-  const cookieStore = await cookies();
-  const hasAccess = cookieStore.get("ces_access")?.value === "true";
-
-  if (!hasAccess) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    if (!hasAccess) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
   try {
     const { message, voiceMode } = await req.json();
