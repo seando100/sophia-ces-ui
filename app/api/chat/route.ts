@@ -121,7 +121,8 @@ export async function POST(req: Request) {
     // ------------------------------------------------------
     let audioBase64: string | null = null;
 
-    if (voiceMode) {
+    // Always generate audio if this is the final turn OR if voiceMode is active
+    if (voiceMode || shouldEnd) {
       const tts = await client.audio.speech.create({
         model: "gpt-4o-mini-tts",
         voice: "alloy",
@@ -131,6 +132,7 @@ export async function POST(req: Request) {
       const buffer = Buffer.from(await tts.arrayBuffer());
       audioBase64 = buffer.toString("base64");
     }
+
 
     return NextResponse.json({
       text: cleanedText,
