@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   console.log("🔵 /api/transcribe hit");
 
   // CES password check
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const hasAccess = cookieStore.get("ces_access")?.value === "true";
   if (!hasAccess) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
