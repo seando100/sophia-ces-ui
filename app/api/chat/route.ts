@@ -52,9 +52,11 @@ IMPORTANT:
 // ------------------------------------------------------
 // SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
 // ------------------------------------------------------
-export async function POST(req: Request) {
+  export async function POST(req: Request) {
+    const cookieStore = await cookies();
+
   // CES ACCESS CHECK — ***THIS WAS THE MISSING FIX***
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const hasAccess = cookieStore.get("ces_access")?.value === "true";
 
   if (!hasAccess) {
