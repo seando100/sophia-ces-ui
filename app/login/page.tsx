@@ -3,24 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// FORCE Next.js to bundle the client env var for debugging
+console.log("Loaded CES password:", process.env.NEXT_PUBLIC_CES_PASSWORD);
+
 export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ password })
-    });
+    const correct = process.env.NEXT_PUBLIC_CES_PASSWORD;
 
-    if (res.ok) {
+    if (password === correct) {
+      sessionStorage.setItem("ces_access", "true");
       router.push("/ces");
     } else {
       setError("Incorrect password");
