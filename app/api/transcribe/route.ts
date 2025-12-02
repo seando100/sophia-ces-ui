@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import OpenAI from "openai";
 
 export const runtime = "nodejs";
@@ -10,17 +9,10 @@ const client = new OpenAI({
 });
 
 // ------------------------------------------------------
-// POST handler with CES Access Gate
+// POST handler — NO LOGIN / NO COOKIE CHECK
 // ------------------------------------------------------
 export async function POST(req: Request) {
   console.log("🔵 /api/transcribe hit");
-
-  // CES password check
-  const cookieStore = await cookies();
-  const hasAccess = cookieStore.get("ces_access")?.value === "true";
-  if (!hasAccess) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
 
   try {
     const formData = await req.formData();
