@@ -1,22 +1,7 @@
-// --- CES Password Protection ---
-import { cookies } from "next/headers";
-
-const cookieStore = cookies();
-const hasAccess = cookieStore.get("ces_access")?.value === "true";
-
-if (!hasAccess) {
-  return new Response(JSON.stringify({ error: "Unauthorized" }), {
-    status: 401,
-  });
-}
-
-// ------------------------------------------------------
-// IMPORTS
-// ------------------------------------------------------
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import OpenAI from "openai";
 
-// Next.js runtime must come AFTER imports
 export const runtime = "nodejs";
 
 // ------------------------------------------------------
@@ -26,9 +11,19 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-
+// ------------------------------------------------------
+// POST HANDLER WITH CES GATE
+// ------------------------------------------------------
 export async function POST(req: Request) {
   console.log("🔵 /api/transcribe hit");
+
+  // CES access protection
+  const cookieStore = cookies();
+  const hasAccess = cookieStore.get("ces_access")?.value === "true";
+
+  if (!hasAccess) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
     const formData = await req.formData();
@@ -50,10 +45,10 @@ export async function POST(req: Request) {
     }
 
     // -------------------------------------------
-    // 2. Send to Whisper API (correct signature)
+    // 2. Whisper transcription (correct signature)
     // -------------------------------------------
     const transcription = await client.audio.transcriptions.create({
-      file,          // File object (Next.js compatible)
+      file,
       model: "whisper-1",
       response_format: "json",
       temperature: 0,
