@@ -6,16 +6,15 @@ export async function POST(req: Request) {
   const correctPassword = process.env.CES_PASSWORD;
 
   if (password === correctPassword) {
-    // MUST await cookies() in Next 16 (returns a Promise)
-    const cookieStore = await cookies();
+    // Correct usage for Next 16: cookies() is NOT async
+    const cookieStore = cookies();
 
-    cookieStore.set({
-      name: "ces_access",
-      value: "true",
+    cookieStore.set("ces_access", "true", {
       httpOnly: true,
       secure: true,
       path: "/",
-      maxAge: 60 * 60 * 12 // 12 hours
+      maxAge: 60 * 60 * 12, // 12 hours
+      sameSite: "lax"
     });
 
     return NextResponse.json({ success: true });
