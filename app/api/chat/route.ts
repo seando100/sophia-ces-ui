@@ -52,7 +52,7 @@ IMPORTANT:
   // ------------------------------------------------------
   // SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
   // ------------------------------------------------------
-  export async function POST(req: Request) {
+export async function POST(req: Request) {
     // CES ACCESS CHECK — inside handler (correct)
     const cookieStore = cookies();
     const hasAccess = cookieStore.get("ces_access")?.value === "true";
