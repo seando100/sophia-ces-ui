@@ -55,7 +55,7 @@ IMPORTANT:
 // ------------------------------------------------------
 export async function POST(req: Request) {
   // CES ACCESS CHECK
-  const cookieStore = cookies();  // <-- FIX: NO await
+  const cookieStore = await cookies();
   const hasAccess = cookieStore.get("ces_access")?.value === "true";
 
   if (!hasAccess) {
