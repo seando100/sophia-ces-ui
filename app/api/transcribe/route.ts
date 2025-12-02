@@ -1,11 +1,31 @@
-export const runtime = "nodejs";
+// --- CES Password Protection ---
+import { cookies } from "next/headers";
 
+const cookieStore = cookies();
+const hasAccess = cookieStore.get("ces_access")?.value === "true";
+
+if (!hasAccess) {
+  return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    status: 401,
+  });
+}
+
+// ------------------------------------------------------
+// IMPORTS
+// ------------------------------------------------------
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
+// Next.js runtime must come AFTER imports
+export const runtime = "nodejs";
+
+// ------------------------------------------------------
+// OPENAI CLIENT
+// ------------------------------------------------------
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
+
 
 export async function POST(req: Request) {
   console.log("🔵 /api/transcribe hit");
