@@ -54,14 +54,6 @@ IMPORTANT:
 // POST HANDLER WITH CES ACCESS CHECK
 // ------------------------------------------------------
 export async function POST(req: Request) {
-  // CES ACCESS CHECK
-  const cookieStore = await cookies();
-  const hasAccess = cookieStore.get("ces_access")?.value === "true";
-
-  if (!hasAccess) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
     const { message, voiceMode } = await req.json();
 
