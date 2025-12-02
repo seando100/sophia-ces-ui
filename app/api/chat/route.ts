@@ -12,7 +12,7 @@ const client = new OpenAI({
 });
 
 // ------------------------------------------------------
-// SYSTEM PROMPT – Option A with control tag
+// SYSTEM PROMPT – with control tag
 // ------------------------------------------------------
 const systemPrompt = `
 You are Sophia, a calm, warm, supportive digital companion designed for older adults.
@@ -41,25 +41,26 @@ Rules:
   "bye", "goodbye", "that's all", "I'm done",
   "I have to go", "no more questions",
   "I'll talk later", "I need to run errands"
-- Hesitation, sadness, or emotional reflection DOES NOT count as ending.
-- If uncertain, default to: {"shouldEnd": false}
+
+- Hesitation, sadness, or emotional reflection does NOT count as ending.
+- If uncertain: {"shouldEnd": false}
 
 IMPORTANT:
 - The control tag must come AFTER your visible text.
-- Do NOT mention or refer to this control tag in any way.
+- Do NOT mention or refer to this control tag.
 `;
 
-  // ------------------------------------------------------
-  // SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
-  // ------------------------------------------------------
+// ------------------------------------------------------
+// POST HANDLER WITH CES ACCESS CHECK
+// ------------------------------------------------------
 export async function POST(req: Request) {
-    // CES ACCESS CHECK — inside handler (correct)
-    const cookieStore = cookies();
-    const hasAccess = cookieStore.get("ces_access")?.value === "true";
+  // CES ACCESS CHECK
+  const cookieStore = cookies();  // <-- FIX: NO await
+  const hasAccess = cookieStore.get("ces_access")?.value === "true";
 
-    if (!hasAccess) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!hasAccess) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
     const { message, voiceMode } = await req.json();
@@ -98,7 +99,6 @@ export async function POST(req: Request) {
     });
 
     let raw = "";
-
     const msg = completion.choices[0].message;
 
     if (msg?.role === "assistant" && msg?.content) {
