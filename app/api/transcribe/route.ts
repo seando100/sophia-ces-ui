@@ -4,23 +4,20 @@ import OpenAI from "openai";
 
 export const runtime = "nodejs";
 
-// ------------------------------------------------------
-// OPENAI CLIENT
-// ------------------------------------------------------
+// OpenAI Client
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
 // ------------------------------------------------------
-// POST HANDLER WITH CES GATE
+// POST handler with CES Access Gate
 // ------------------------------------------------------
 export async function POST(req: Request) {
   console.log("🔵 /api/transcribe hit");
 
-  // CES access protection
+  // Move CES password check INSIDE handler (required by Next.js)
   const cookieStore = cookies();
   const hasAccess = cookieStore.get("ces_access")?.value === "true";
-
   if (!hasAccess) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -36,17 +33,13 @@ export async function POST(req: Request) {
 
     console.log("🟠 Incoming file:", file.name, file.type, file.size);
 
-    // -------------------------------------------
     // 1. Reject extremely short or silent clips
-    // -------------------------------------------
     if (file.size < 2000) {
       console.log("⚠️ Very small audio file, treat as silence");
       return NextResponse.json({ text: "" });
     }
 
-    // -------------------------------------------
-    // 2. Whisper transcription (correct signature)
-    // -------------------------------------------
+    // 2. Send to Whisper API
     const transcription = await client.audio.transcriptions.create({
       file,
       model: "whisper-1",
@@ -58,9 +51,6 @@ export async function POST(req: Request) {
 
     console.log("🟢 Whisper transcript:", text);
 
-    // -------------------------------------------
-    // 3. Return empty string if no meaningful words
-    // -------------------------------------------
     if (!text || text.length < 2) {
       return NextResponse.json({ text: "" });
     }
