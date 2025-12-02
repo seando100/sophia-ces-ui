@@ -15,7 +15,7 @@ const client = new OpenAI({
 export async function POST(req: Request) {
   console.log("🔵 /api/transcribe hit");
 
-  // Move CES password check INSIDE handler (required by Next.js)
+  // CES password check
   const cookieStore = cookies();
   const hasAccess = cookieStore.get("ces_access")?.value === "true";
   if (!hasAccess) {
@@ -33,13 +33,13 @@ export async function POST(req: Request) {
 
     console.log("🟠 Incoming file:", file.name, file.type, file.size);
 
-    // 1. Reject extremely short or silent clips
+    // Reject extremely short or silent clips (< 2kb)
     if (file.size < 2000) {
       console.log("⚠️ Very small audio file, treat as silence");
       return NextResponse.json({ text: "" });
     }
 
-    // 2. Send to Whisper API
+    // Whisper transcription
     const transcription = await client.audio.transcriptions.create({
       file,
       model: "whisper-1",

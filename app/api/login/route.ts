@@ -1,21 +1,21 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   const { password } = await req.json();
   const correctPassword = process.env.CES_PASSWORD;
 
   if (password === correctPassword) {
-    const res = NextResponse.json({ ok: true });
-
-    res.cookies.set("ces_auth", password, {
+    // Set correct cookie
+    cookies().set("ces_access", "true", {
       httpOnly: true,
       secure: true,
       path: "/",
       maxAge: 60 * 60 * 12 // 12 hours
     });
 
-    return res;
+    return NextResponse.json({ success: true });
   }
 
-  return new NextResponse("Unauthorized", { status: 401 });
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }

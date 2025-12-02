@@ -1,9 +1,22 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LogoutPage() {
-  const cookieStore = cookies();
-  cookieStore.delete("ces_access");
+  const router = useRouter();
 
-  redirect("/login");
+  useEffect(() => {
+    const run = async () => {
+      await fetch("/api/logout", { method: "POST" });
+      router.replace("/login");
+    };
+    run();
+  }, [router]);
+
+  return (
+    <div style={{ color: "white", padding: 40 }}>
+      Logging out...
+    </div>
+  );
 }
