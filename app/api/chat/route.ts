@@ -1,22 +1,7 @@
-// --- CES Password Protection ---
-import { cookies } from "next/headers";
-
-const cookieStore = cookies();
-const hasAccess = cookieStore.get("ces_access")?.value === "true";
-
-if (!hasAccess) {
-  return new Response(JSON.stringify({ error: "Unauthorized" }), {
-    status: 401,
-  });
-}
-
-// ------------------------------------------------------
-// IMPORTS
-// ------------------------------------------------------
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import OpenAI from "openai";
 
-// Next.js runtime must come AFTER imports
 export const runtime = "nodejs";
 
 // ------------------------------------------------------
@@ -64,7 +49,18 @@ IMPORTANT:
 - Do NOT mention or refer to this control tag in any way.
 `;
 
+// ------------------------------------------------------
+// SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
+// ------------------------------------------------------
 export async function POST(req: Request) {
+  // CES ACCESS CHECK
+  const cookieStore = cookies();
+  const hasAccess = cookieStore.get("ces_access")?.value === "true";
+
+  if (!hasAccess) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { message, voiceMode } = await req.json();
 
@@ -101,7 +97,6 @@ export async function POST(req: Request) {
       ]
     });
 
-    // Support both new and old API formats
     let raw = "";
 
     // NEW OpenAI SDK format: single assistant message
