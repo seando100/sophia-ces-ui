@@ -238,13 +238,31 @@ export default function CESPage() {
       // Show assistant text reply
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
 
-      // If she should end the conversation, DO NOT restart mic
+      // ==== FINAL GOODBYE LOGIC ====
+      // Play her final goodbye FIRST, then shut everything down
       if (shouldEnd) {
-        console.log("Conversation ended by AI");
-        voiceModeRef.current = false;   // Pause voice mode for now
-        allowMicRef.current = false;    // Keep mic off
-        return;                         // EXIT — no audio, no restart
+        console.log("👋 Conversation ending — playing final goodbye");
+
+        if (audioRef.current && data.audio) {
+          const player = audioRef.current;
+          player.src = `data:audio/mp3;base64,${data.audio}`;
+
+          try {
+            await player.play();
+            console.log("👋 Final goodbye spoken");
+          } catch (err) {
+            console.error("❌ Final goodbye failed to play:", err);
+          }
+        }
+
+        // AFTER playback, fully shut off voice mode
+        voiceModeRef.current = false;
+        allowMicRef.current = false;
+        isRecordingRef.current = false;
+
+        return;
       }
+
 
       // If not voice mode, stop here
       if (!voice) return;
