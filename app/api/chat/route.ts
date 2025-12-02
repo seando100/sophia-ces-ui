@@ -38,8 +38,8 @@ or
 
 Rules:
 - shouldEnd = true ONLY if the user is clearly ending the conversation:
-  "bye", "goodbye", "that's all", "I'm done", 
-  "I have to go", "no more questions", 
+  "bye", "goodbye", "that's all", "I'm done",
+  "I have to go", "no more questions",
   "I'll talk later", "I need to run errands"
 - Hesitation, sadness, or emotional reflection DOES NOT count as ending.
 - If uncertain, default to: {"shouldEnd": false}
@@ -53,7 +53,7 @@ IMPORTANT:
 // SINGLE POST HANDLER WITH CES GATE + FULL LOGIC
 // ------------------------------------------------------
 export async function POST(req: Request) {
-  // CES ACCESS CHECK
+  // CES ACCESS CHECK — ***THIS WAS THE MISSING FIX***
   const cookieStore = cookies();
   const hasAccess = cookieStore.get("ces_access")?.value === "true";
 
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
     }
 
     // ------------------------------------------------------
-    // GPT CALL (supports multi-message structured output)
+    // GPT CALL
     // ------------------------------------------------------
     const completion = await client.chat.completions.create({
       model: "gpt-4.1",
@@ -99,13 +99,10 @@ export async function POST(req: Request) {
 
     let raw = "";
 
-    // NEW OpenAI SDK format: single assistant message
     const msg = completion.choices[0].message;
 
-    if (msg && msg.role === "assistant" && msg.content) {
+    if (msg?.role === "assistant" && msg?.content) {
       raw = msg.content;
-    } else {
-      raw = "";
     }
 
     // ------------------------------------------------------
@@ -123,9 +120,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // ------------------------------------------------------
-    // CLEAN VISIBLE TEXT
-    // ------------------------------------------------------
     const cleanedText = raw
       .replace(/<control>[\s\S]*?<\/control>/gi, "")
       .trim();
@@ -146,9 +140,6 @@ export async function POST(req: Request) {
       audioBase64 = buffer.toString("base64");
     }
 
-    // ------------------------------------------------------
-    // RETURN FULL RESPONSE
-    // ------------------------------------------------------
     return NextResponse.json({
       text: cleanedText,
       audio: audioBase64,
