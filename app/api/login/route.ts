@@ -6,8 +6,12 @@ export async function POST(req: Request) {
   const correctPassword = process.env.CES_PASSWORD;
 
   if (password === correctPassword) {
-    // Set correct cookie
-    cookies().set("ces_access", "true", {
+    // MUST await cookies() in Next 16 (returns a Promise)
+    const cookieStore = await cookies();
+
+    cookieStore.set({
+      name: "ces_access",
+      value: "true",
       httpOnly: true,
       secure: true,
       path: "/",
