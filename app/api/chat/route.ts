@@ -97,7 +97,7 @@ export async function POST(req: Request) {
     // ------------------------------------------------------
     // EXTRACT CONTROL TAG
     // ------------------------------------------------------
-    const controlMatch = raw.match(/<control>(.*?)<\/control>/s);
+    const controlMatch = raw.match(/<control>([\s\S]*?)<\/control>/);
     let shouldEnd = false;
 
     if (controlMatch) {
