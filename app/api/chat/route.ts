@@ -85,19 +85,13 @@ export async function POST(req: Request) {
     // Support both new and old API formats
     let raw = "";
 
-    // NEW format: array of assistant messages
-    if (completion.choices[0].messages) {
-      const msgs = completion.choices[0].messages;
-      for (const m of msgs) {
-        if (m.role === "assistant" && m.content) {
-          raw += m.content + "\n";
-        }
-      }
-      raw = raw.trim();
-    }
-    // OLD format: single assistant message
-    else {
-      raw = completion.choices[0].message?.content || "";
+    // NEW OpenAI SDK format: single assistant message
+    const msg = completion.choices[0].message;
+
+    if (msg && msg.role === "assistant" && msg.content) {
+      raw = msg.content;
+    } else {
+      raw = "";
     }
 
     // ------------------------------------------------------
